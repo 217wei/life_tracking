@@ -6,8 +6,7 @@ app.secret_key = 'your_secret_key'
 
 
 # 設定資料庫
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///health.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///diet_data.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///life_tracking.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
