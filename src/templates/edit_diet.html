@@ -3,40 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diet Management</title>
+    <title>Edit Diet Data</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
             line-height: 1.6;
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #e3f2fd, #f1f8e9);
+            background: linear-gradient(135deg, #fdfbfb, #ebedee);
             color: #333;
         }
-        .overlay {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 20px;
-            border-radius: 10px;
+        .container {
             max-width: 400px;
             margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
         h1 {
             text-align: center;
             color: #4CAF50;
             margin-bottom: 20px;
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .icon-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .icon {
-            font-size: 60px;
-            color: #4CAF50;
         }
         label {
             display: block;
@@ -54,7 +42,7 @@
         button {
             width: 100%;
             padding: 10px 20px;
-            margin-top: 15px;
+            margin-top: 20px;
             background: linear-gradient(135deg, #4CAF50, #45a049);
             color: white;
             border: none;
@@ -69,44 +57,46 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
+        .note {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <div class="overlay">
-        <h1>Diet Management</h1>
-        <div class="icon-container">
-            <div class="icon">🍎</div>
-        </div>
-        <h2>Add Your Meal</h2>
-        <form method="POST" action="/add_diet/{{ user_id }}">
+    <div class="container">
+        <h1>Edit Diet Data</h1>
+        <form method="POST">
             <!-- Meal Type -->
             <label for="meal_type">Meal Type:</label>
-            <select id="meal_type" name="meal_type" required>
-                <option value="" disabled selected>Select Meal Type</option>
-                <option value="Breakfast">Breakfast</option>
-                <option value="Lunch">Lunch</option>
-                <option value="Dinner">Dinner</option>
-                <option value="Snack">Snack</option>
+            <select name="meal_type" id="meal_type" required>
+                <option value="Breakfast" {% if diet.meal_type == 'Breakfast' %}selected{% endif %}>Breakfast</option>
+                <option value="Lunch" {% if diet.meal_type == 'Lunch' %}selected{% endif %}>Lunch</option>
+                <option value="Dinner" {% if diet.meal_type == 'Dinner' %}selected{% endif %}>Dinner</option>
+                <option value="Snack" {% if diet.meal_type == 'Snack' %}selected{% endif %}>Snack</option>
             </select>
 
             <!-- Carbohydrates -->
             <label for="carbs">Carbohydrates (grams):</label>
-            <input type="number" id="carbs" name="carbs" placeholder="e.g., 200" min="0" step="1" required>
+            <input type="number" name="carbs" id="carbs" value="{{ diet.carbs }}" required>
 
             <!-- Fats -->
             <label for="fats">Fats (grams):</label>
-            <input type="number" id="fats" name="fats" placeholder="e.g., 50" min="0" step="0.1" required>
+            <input type="number" name="fats" id="fats" value="{{ diet.fats }}" required>
 
             <!-- Protein -->
             <label for="protein">Protein (grams):</label>
-            <input type="number" id="protein" name="protein" placeholder="e.g., 100" min="0" step="1" required>
+            <input type="number" name="protein" id="protein" value="{{ diet.protein }}" required>
 
             <!-- Notes -->
             <label for="notes">Notes:</label>
-            <input type="text" id="notes" name="notes" placeholder="e.g., No sugar in drink">
+            <input type="text" name="notes" id="notes" value="{{ diet.notes }}">
 
-            <button type="submit">Submit</button>
+            <button type="submit">Save Changes</button>
         </form>
+        <div class="note">Make sure all fields are filled out correctly before saving.</div>
     </div>
 </body>
 </html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>View Diet Data</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #fdfbfb, #ebedee);
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        .button-container {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        a {
+            display: inline-block;
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s ease-in-out;
+            margin: 5px;
+            font-size: 16px;
+        }
+        a:hover {
+            background: linear-gradient(135deg, #45a049, #3e8e41);
+            transform: translateY(-2px);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        td {
+            background-color: #f9f9f9;
+        }
+        td:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        button {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+        button:hover {
+            background-color: #d32f2f;
+            transform: translateY(-2px);
+        }
+        .empty-message {
+            text-align: center;
+            font-size: 18px;
+            color: #666;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Diet Records</h1>
+        <div class="button-container">
+            <a href="/dashboard/{{ user_id }}">Back to Dashboard</a>
+            <a href="/add_diet/{{ user_id }}">Add New Diet</a>
+        </div>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Meal Type</th>
+                <th>Carbohydrates (g)</th>
+                <th>Fats (g)</th>
+                <th>Protein (g)</th>
+                <th>Calories (kcal)</th>
+                <th>Notes</th>
+                <th>Actions</th>
+            </tr>
+            {% if diet_data %}
+                {% for diet in diet_data %}
+                <tr>
+                    <td>{{ diet.id }}</td>
+                    <td>{{ diet.meal_type }}</td>
+                    <td>{{ diet.carbs }}</td>
+                    <td>{{ diet.fats }}</td>
+                    <td>{{ diet.protein }}</td>
+                    <td>{{ diet.calories }}</td>
+                    <td>{{ diet.notes }}</td>
+                    <td>
+                        <a href="/edit_diet/{{ diet.id }}" style="background: #007BFF; padding: 5px 10px; border-radius: 5px;">Edit</a>
+                        <form action="{{ url_for('delete_diet', diet_id=diet.id) }}" method="POST" style="display: inline;">
+                            <button type="submit" onclick="return confirm('Are you sure you want to delete this record?')">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="8" class="empty-message">No diet data available.</td>
+                </tr>
+            {% endif %}
+        </table>
+    </div>
+</body>
+</html>

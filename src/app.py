@@ -1,10 +1,13 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.secret_key = 'your_secret_key'
+
 
 # 設定資料庫
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///health.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///diet_data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
@@ -28,13 +31,19 @@ class HealthData(db.Model):
     heart_rate = db.Column(db.String(20))
     weight = db.Column(db.Float)
 
-### 待完成
 class DietData(db.Model):
+    __tablename__ = 'diet_data'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    meal_type = db.Column(db.String(20))  # 早餐/午餐/晚餐
-    calories = db.Column(db.Integer)
-    notes = db.Column(db.String(100))
+    user_id = db.Column(db.Integer, nullable=False)
+    meal_type = db.Column(db.String(50), nullable=False)
+    carbs = db.Column(db.Float, nullable=False)
+    fats = db.Column(db.Float, nullable=False)
+    protein = db.Column(db.Float, nullable=False)
+    calories = db.Column(db.Float, nullable=False)
+    notes = db.Column(db.String(255), nullable=True)
+    created_at = db.Column(db.DateTime, default=db.func.now())
+
+
 
 ### 待完成
 class SleepData(db.Model):
@@ -47,7 +56,7 @@ class SleepData(db.Model):
 
 
 
-# 初始化資料庫
+#建立資料表結構
 with app.app_context():
     db.create_all()
 
@@ -135,20 +144,70 @@ def delete_health(health_id):
     return redirect(url_for('view_health', user_id=user_id))
 
 #########################################################
-# 新增飲食資料(gpt產生的範例)
-# 
+# 新增飲食資料
 @app.route('/add_diet/<int:user_id>', methods=['GET', 'POST'])
 def add_diet(user_id):
     if request.method == 'POST':
+        # 從表單獲取數據
         meal_type = request.form['meal_type']
-        calories = request.form['calories']
+        carbs = request.form['carbs']
+        fats = request.form['fats']
+        protein = request.form['protein']
+        calories = (float(carbs) * 4) + (float(fats) * 9) + (float(protein) * 4)
         notes = request.form['notes']
 
-        new_diet = DietData(user_id=user_id, meal_type=meal_type, calories=calories, notes=notes)
+        # 儲存到資料庫
+        new_diet = DietData(user_id=user_id, meal_type=meal_type, carbs=carbs, fats=fats, protein=protein, calories=calories, notes=notes)
         db.session.add(new_diet)
         db.session.commit()
+
+        # 重定向到主畫面或其他頁面
         return redirect(url_for('dashboard', user_id=user_id))
-    return render_template('add_diet.html')
+    return render_template('add_diet.html', user_id=user_id)
+
+
+#查看飲食資料
+@app.route('/view_diet/<int:user_id>')
+def view_diet(user_id):
+    # 從資料庫中查詢該用戶的飲食數據
+    diet_data = DietData.query.filter_by(user_id=user_id).all()
+
+    # 渲染前端模板
+    return render_template('view_diet.html', diet_data=diet_data, user_id=user_id)
+
+#修改飲食資料
+@app.route('/edit_diet/<int:diet_id>', methods=['GET', 'POST'])
+def edit_diet(diet_id):
+    # 查詢要編輯的飲食資料
+    diet = DietData.query.get_or_404(diet_id)
+
+    if request.method == 'POST':
+        # 從表單獲取更新的數據
+        diet.meal_type = request.form['meal_type']
+        diet.carbs = float(request.form['carbs'])
+        diet.fats = float(request.form['fats'])
+        diet.protein = float(request.form['protein'])
+        diet.calories = (diet.carbs * 4) + (diet.fats * 9) + (diet.protein * 4)
+        diet.notes = request.form['notes']
+
+        # 更新到資料庫
+        db.session.commit()
+
+        # 重定向到查看飲食數據的頁面
+        return redirect(url_for('view_diet', user_id=diet.user_id))
+
+    # 初始加載編輯頁面
+    return render_template('edit_diet.html', diet=diet)
+
+#刪除飲食資料
+@app.route('/delete_diet/<int:diet_id>', methods=['POST'])
+def delete_diet(diet_id):
+    diet = DietData.query.get_or_404(diet_id)
+    user_id = diet.user_id
+    db.session.delete(diet)
+    db.session.commit()
+    flash('Diet record deleted successfully!', 'success')
+    return redirect(url_for('view_diet', user_id=user_id))
 
 
 #########################################################
