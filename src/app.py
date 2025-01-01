@@ -42,7 +42,15 @@ class DietData(db.Model):
     notes = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, default=db.func.now())
 
-
+class MedicalHistoryData(db.Model):
+    __tablename__ = 'medicalHistory_data'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id', ondelete='CASCADE'), nullable=False)
+    familyHistory = db.Column(db.Text, nullable=False)
+    allergies = db.Column(db.Text, nullable=False)
+    diseases = db.Column(db.Text, nullable=False)
+    
+    user = db.relationship('User', backref=db.backref('medical_histories', cascade='all, delete'))
 
 ### 待完成
 class SleepData(db.Model):
@@ -52,7 +60,6 @@ class SleepData(db.Model):
     sleep_quality = db.Column(db.String(20))  # 好/中/差
 
 ### 待完成...... 
-
 
 
 #建立資料表結構
@@ -222,6 +229,90 @@ def add_sleep(user_id):
         db.session.commit()
         return redirect(url_for('dashboard', user_id=user_id))
     return render_template('add_sleep.html')
+
+#########################################################
+# 新增醫療歷史記錄
+@app.route('/add_medicalHistory/<int:user_id>', methods=['GET', 'POST'])
+def add_medicalHistory(user_id):
+    if request.method == 'POST':
+        # 從表單獲取數據
+        familyHistory = request.form['familyHistory']
+        allergies = request.form['allergies']
+        diseases = request.form['diseases']
+
+        # 儲存到資料庫
+        new_history = MedicalHistoryData(
+            user_id=user_id,
+            familyHistory=familyHistory,
+            allergies=allergies,
+            diseases=diseases
+        )
+        
+        #db.session.add(new_history)
+        #db.session.commit()
+        
+        try:
+            db.session.add(new_history)
+            db.session.commit()
+            # 提示並重定向
+            flash('Medical history added successfully!', 'success')
+            return redirect(url_for('dashboard', user_id=user_id))
+        except Exception as e:
+            db.session.rollback()
+            flash(f"An error occurred: {e}", 'danger')
+            return redirect(url_for('add_medicalHistory', user_id=user_id))
+
+    return render_template('add_medicalHistory.html', user_id=user_id)
+
+# 查看醫療歷史記錄
+@app.route('/view_medicalHistory/<int:user_id>')
+def view_medical_history(user_id):
+    # 查詢該用戶的醫療歷史記錄
+    medicalHistory = MedicalHistoryData.query.filter_by(user_id=user_id).all()
+
+    # 如果找不到資料，回傳提示
+    #if not medicalHistory:
+    #    flash('No medical history found for this user.', 'warning')
+    #    return redirect(url_for('dashboard', user_id=user_id))
+    
+    # 渲染模板
+    return render_template('view_medicalHistory.html', medicalHistory =medicalHistory , user_id=user_id)
+
+# 修改醫療歷史記錄
+@app.route('/edit_medicalHistory/<int:history_id>', methods=['GET', 'POST'])
+def edit_medicalHistory(history_id):
+    # 查詢要編輯的記錄
+    history = MedicalHistoryData.query.get_or_404(history_id)
+
+    if request.method == 'POST':
+        # 從表單獲取更新數據
+        history.familyHistory = request.form['familyHistory']
+        history.allergies = request.form['allergies']
+        history.diseases = request.form['diseases']
+
+        # 更新到資料庫
+        db.session.commit()
+
+        # 提示並重定向
+        flash('Medical history updated successfully!', 'success')
+        return redirect(url_for('view_medical_history', user_id=history.user_id))
+
+    return render_template('edit_medicalHistory.html', history=history)
+
+# 刪除醫療歷史記錄
+@app.route('/delete_medicalHistory/<int:history_id>', methods=['POST'])
+def delete_medical_history(history_id):
+    # 查詢記錄
+    medicalHistory= MedicalHistoryData.query.get_or_404(history_id)
+    user_id = medicalHistory.user_id
+
+    # 刪除資料庫記錄
+    db.session.delete(medicalHistory)
+    db.session.commit()
+
+    # 提示並重定向
+    flash('Medical history deleted successfully!', 'success')
+    return redirect(url_for('view_medical_history', user_id=user_id))
 
 #########################################################
 ### 待完成...... 
