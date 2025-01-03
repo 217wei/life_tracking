@@ -1,4 +1,3 @@
-<!-- regiester畫面 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,14 +8,50 @@
 <body>
     <h1>Register</h1>
     <form method="POST" action="/register">
+        <!-- Username -->
         <label for="username">Username:</label>
         <input type="text" name="username" id="username" required>
-        <br>
+        <br><br>
+
+        <!-- Password -->
         <label for="password">Password:</label>
         <input type="password" name="password" id="password" required>
-        <br>
+        <br><br>
+
+        <!-- Phone -->
+        <label for="phone">Phone:</label>
+        <input type="tel" name="phone" id="phone" required pattern="[0-9]+" title="Phone number must contain only digits">
+        <br><br>
+
+        <!-- Gender -->
+        <label for="gender">Gender:</label>
+        <select name="gender" id="gender" required>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Other">Other</option>
+        </select>
+        <br><br>
+
+        <!-- Birth Date -->
+        <label for="birth_date">Birth Date:</label>
+        <input type="date" name="birth_date" id="birth_date">
+        <br><br>
+
+        <!-- Initial Weight -->
+        <label for="init_weight">Initial Weight (kg):</label>
+        <input type="number" name="init_weight" id="init_weight" step="0.1">
+        <br><br>
+
+        <!-- Height -->
+        <label for="height">Height (cm):</label>
+        <input type="number" name="height" id="height" step="0.1">
+        <br><br>
+
+        <!-- Submit Button -->
         <button type="submit">Register</button>
     </form>
+    
+    <!-- Link to Login -->
     <p>Already have an account? <a href="/">Login here</a>.</p>
 </body>
 </html>
