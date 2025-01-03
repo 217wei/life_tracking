@@ -17,7 +17,7 @@ db = SQLAlchemy(app)
 ### User, HealthData, DietData, SleepData, ExerciseData, goal, medical history
 #########################################################
 
-### 待完成
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)  # 用戶名，必填且唯一
