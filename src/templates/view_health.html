@@ -4,29 +4,104 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>View Health Data</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #e3f2fd, #f1f8e9);
+            color: #333;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 800px;
+            margin: 50px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        a {
+            color: #4CAF50;
+            text-decoration: none;
+            transition: 0.3s ease-in-out;
+        }
+        a:hover {
+            color: #45a049;
+            text-decoration: underline;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: 0.3s ease-in-out;
+        }
+        .back-button:hover {
+            background: linear-gradient(135deg, #45a049, #3e8e41);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-decoration: none;
+        }
+        .action-links {
+            white-space: nowrap;
+        }
+    </style>
 </head>
 <body>
-    <h1>Health Data</h1>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Blood Pressure</th>
-            <th>Heart Rate</th>
-            <th>Weight</th>
-            <th>Actions</th>
-        </tr>
-        {% for health in health_data %}
-        <tr>
-            <td>{{ health.id }}</td>
-            <td>{{ health.blood_pressure }}</td>
-            <td>{{ health.heart_rate }}</td>
-            <td>{{ health.weight }}</td>
-            <td>
-                <a href="/edit_health/{{ health.id }}">Edit</a> |
-                <a href="/delete_health/{{ health.id }}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+    <div class="container">
+        <h1>Health Data</h1>
+        <table>
+            <tr>
+                <th>Date</th>
+                <th>Weight (kg)</th>
+                <th>Body Fat (%)</th>
+                <th>BMI</th>
+                <th>Actions</th>
+            </tr>
+            {% for health in health_data %}
+            <tr>
+                <td>{{ health.record_date.strftime('%Y-%m-%d') }}</td>
+                <td>{{ health.weight }}</td>
+                <td>{{ health.body_fat }}</td>
+                <td>{{ health.bmi }}</td>
+                <td class="action-links">
+                    <a href="{{ url_for('edit_health', health_id=health.id) }}">Edit</a> |
+                    <a href="{{ url_for('delete_health', health_id=health.id) }}">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        <a href="{{ url_for('dashboard', user_id=user_id) }}" class="back-button">Back to Dashboard</a>
+    </div>
 </body>
 </html>

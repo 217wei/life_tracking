@@ -1,56 +1,100 @@
-<!-- 功能畫面 -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #fce4ec, #e8f5e9);
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        h2 {
+            color: #333;
+            margin-top: 30px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 5px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 10px 0;
+        }
+        a {
+            display: block;
+            text-decoration: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: bold;
+            transition: 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        a.add-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+        }
+        a.add-btn:hover {
+            background: linear-gradient(135deg, #45a049, #3e8e41);
+            transform: translateY(-2px);
+        }
+        a.view-btn {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+        }
+        a.view-btn:hover {
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+            transform: translateY(-2px);
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to the Dashboard</h1>
-    <h2>Select an option to add data:</h2>
-    <ul>
-        <li><a href="/add_health/{{ user_id }}">Add Health Data</a></li>
-        <li><a href="/add_diet/{{ user_id }}">Add Diet Data</a></li>
-        <li><a href="/add_sleep/{{ user_id }}">Add Sleep Data</a></li>
-        <li><a href="/add_medicalHistory/{{ user_id }}">Add Medical History Data</a></li>
-        <li><a href="/view_health/{{ user_id }}">View Health Data</a></li>
-        <li><a href="/view_diet/{{ user_id }}">View Diet Data</a></li>
-        <li><a href="/view_medicalHistory/{{ user_id }}">View Medical History Data</a></li>
-    </ul>
+    <div class="container">
+        <h1>Welcome to the Dashboard</h1>
+        
+        <h2>Health</h2>
+        <ul>
+            <li><a href="/add_health/{{ user_id }}" class="add-btn">Add Health Data</a></li>
+            <li><a href="/view_health/{{ user_id }}" class="view-btn">View Health Data</a></li>
+        </ul>
+
+        <h2>Diet</h2>
+        <ul>
+            <li><a href="/add_diet/{{ user_id }}" class="add-btn">Add Diet Data</a></li>
+            <li><a href="/view_diet/{{ user_id }}" class="view-btn">View Diet Data</a></li>
+        </ul>
+
+        <h2>Sleep</h2>
+        <ul>
+            <li><a href="/add_sleep/{{ user_id }}" class="add-btn">Add Sleep Data</a></li>
+            <li><a href="/view_sleep/{{ user_id }}" class="view-btn">View Sleep Data</a></li>
+        </ul>
+
+        <h2>Medical History</h2>
+        <ul>
+            <li><a href="/add_medicalHistory/{{ user_id }}" class="add-btn">Add Medical History Data</a></li>
+            <li><a href="/view_medicalHistory/{{ user_id }}" class="view-btn">View Medical History Data</a></li>
+        </ul>
+    </div>
 </body>
 </html>
-<!-- 
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>View Health Data</title>
-</head>
-<body>
-    <h1>Health Data</h1>
-    <table border="1">
-        <tr>
-            <th>ID</th>
-            <th>Blood Pressure</th>
-            <th>Heart Rate</th>
-            <th>Weight</th>
-            <th>Actions</th>
-        </tr>
-        {% for health in health_data %}
-        <tr>
-            <td>{{ health.id }}</td>
-            <td>{{ health.blood_pressure }}</td>
-            <td>{{ health.heart_rate }}</td>
-            <td>{{ health.weight }}</td>
-            <td>
-                <a href="/edit_health/{{ health.id }}">Edit</a> |
-                <a href="/delete_health/{{ health.id }}">Delete</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-</body>
-</html> -->

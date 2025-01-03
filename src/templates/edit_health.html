@@ -1,24 +1,103 @@
-<!-- edit health -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Health Data</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e3f2fd, #f1f8e9);
+            color: #333;
+        }
+        .overlay {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: 50px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        .icon-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .icon {
+            font-size: 60px;
+            color: #4CAF50;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px 20px;
+            margin-top: 15px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background: linear-gradient(135deg, #45a049, #3e8e41);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #4CAF50;
+            text-decoration: none;
+            transition: 0.3s ease-in-out;
+        }
+        .back-link:hover {
+            color: #45a049;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Edit Health Data</h1>
-    <form method="POST">
-        <label for="blood_pressure">Blood Pressure:</label>
-        <input type="text" name="blood_pressure" id="blood_pressure" value="{{ health.blood_pressure }}">
-        <br>
-        <label for="heart_rate">Heart Rate:</label>
-        <input type="text" name="heart_rate" id="heart_rate" value="{{ health.heart_rate }}">
-        <br>
-        <label for="weight">Weight:</label>
-        <input type="text" name="weight" id="weight" value="{{ health.weight }}">
-        <br>
-        <button type="submit">Save Changes</button>
-    </form>
+    <div class="overlay">
+        <h1>Edit Health Data</h1>
+        <div class="icon-container">
+            <div class="icon">📝</div>
+        </div>
+        <form method="POST">
+            <label for="weight">Weight (kg):</label>
+            <input type="number" step="0.1" name="weight" id="weight" value="{{ health.weight }}" required>
+
+            <label for="body_fat">Body Fat (%):</label>
+            <input type="number" step="0.1" name="body_fat" id="body_fat" value="{{ health.body_fat }}">
+
+            <label for="record_date">Date:</label>
+            <input type="date" name="record_date" id="record_date" value="{{ datetime.utcnow().date() }}">
+
+            <button type="submit">Save Changes</button>
+        </form>
+        <a href="{{ url_for('view_health', user_id=health.user_id) }}" class="back-link">Back to View Health</a>
+    </div>
 </body>
 </html>

@@ -30,11 +30,12 @@ class User(db.Model):
     
 ### 待完成
 class HealthData(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True) ##### 想修改
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    blood_pressure = db.Column(db.String(20))
-    heart_rate = db.Column(db.String(20))
-    weight = db.Column(db.Float)
+    weight = db.Column(db.Float, nullable=False)  # 體重
+    body_fat = db.Column(db.Float, nullable=True, default=0)  # 體脂肪
+    bmi = db.Column(db.Float, nullable=True)      # BMI，系統計算後儲存
+    record_date = db.Column(db.DateTime, default=db.func.now())  # 紀錄的日期和時間
 
 class DietData(db.Model):
     __tablename__ = 'diet_data'
@@ -71,6 +72,14 @@ class SleepData(db.Model):
 #建立資料表結構
 with app.app_context():
     db.create_all()
+
+
+# 所有模板都可以直接使用 datetime，不需要每次在路由中手動傳遞
+@app.context_processor
+def inject_datetime():
+    from datetime import datetime
+    return {'datetime': datetime}
+
 
 #########################################################
 ### 這裡每一個模塊是大家要分工要寫的
@@ -136,15 +145,34 @@ def dashboard(user_id):
 @app.route('/add_health/<int:user_id>', methods=['GET', 'POST'])
 def add_health(user_id):
     if request.method == 'POST':
-        blood_pressure = request.form['blood_pressure']
-        heart_rate = request.form['heart_rate']
-        weight = request.form['weight']
+        weight = float(request.form['weight'])
+        body_fat = request.form['body_fat']  # 可選
+        record_date = request.form['record_date']
+        record_date = datetime.strptime(record_date, '%Y-%m-%d') if record_date else datetime.utcnow()
+        
+        # 如果用戶沒有輸入body_fat則用上一筆資料代替
+        if not body_fat:
+            # last_health = HealthData.query.filter_by(user_id=user_id).order_by(HealthData.record_date.desc()).first()
+            # body_fat = last_health.body_fat if last_health else None  # 如果沒有任何記錄，設為 None
+            body_fat = None
+        else:
+            body_fat = float(body_fat)
 
-        new_health = HealthData(user_id=user_id, blood_pressure=blood_pressure, heart_rate=heart_rate, weight=weight)
+        # 查詢用戶身高
+        user = User.query.get(user_id)
+        if user and user.height:
+            bmi = round(weight / ((user.height / 100) ** 2), 1)  # BMI = 體重(kg) / 身高(m)^2
+        else:
+            bmi = None  # 如果身高未知，無法計算 BMI
+
+        # 儲存健康資料
+        new_health = HealthData(user_id=user_id, weight=weight, body_fat=body_fat, bmi=bmi)
         db.session.add(new_health)
         db.session.commit()
         return redirect(url_for('dashboard', user_id=user_id))
+
     return render_template('add_health.html')
+
 
 # 查看健康資料
 @app.route('/view_health/<int:user_id>')
@@ -152,17 +180,25 @@ def view_health(user_id):
     health_data = HealthData.query.filter_by(user_id=user_id).all()
     return render_template('view_health.html', health_data=health_data, user_id=user_id)
 
+
 # 編輯健康資料
 @app.route('/edit_health/<int:health_id>', methods=['GET', 'POST'])
 def edit_health(health_id):
     health = HealthData.query.get_or_404(health_id)
     if request.method == 'POST':
-        health.blood_pressure = request.form['blood_pressure']
-        health.heart_rate = request.form['heart_rate']
-        health.weight = request.form['weight']
+        health.weight = float(request.form['weight'])
+        health.body_fat = float(request.form.get('body_fat', 0))  # 可選
+
+        # 更新 BMI
+        user = User.query.get(health.user_id)
+        if user and user.height:
+            health.bmi = round(health.weight / ((user.height / 100) ** 2))
+
         db.session.commit()
         return redirect(url_for('view_health', user_id=health.user_id))
+
     return render_template('edit_health.html', health=health)
+
 
 # 刪除健康資料
 @app.route('/delete_health/<int:health_id>')
