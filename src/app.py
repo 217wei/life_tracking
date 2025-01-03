@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -19,8 +20,13 @@ db = SQLAlchemy(app)
 ### 待完成
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(50), nullable=False)  # 密碼作為普通屬性
+    username = db.Column(db.String(50), unique=True, nullable=False)  # 用戶名，必填且唯一
+    password = db.Column(db.String(50), nullable=False)               # 密碼，必填
+    phone = db.Column(db.String(15), unique=True, nullable=False)     # 電話號碼，必填且唯一
+    gender = db.Column(db.String(10), nullable=True)                  # 性別，可選
+    birth_date = db.Column(db.Date, nullable=True)                    # 出生日期，可選
+    init_weight = db.Column(db.Float, nullable=True)                  # 初始體重，可選，浮點型
+    height = db.Column(db.Float, nullable=True)                       # 身高（以公分為單位），可選，浮點型
     
 ### 待完成
 class HealthData(db.Model):
@@ -93,9 +99,27 @@ def register():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
+        phone = request.form['phone']
+        gender = request.form['gender']
+        birth_date = request.form['birth_date']
+        init_weight = request.form['init_weight']
+        height = request.form['height']
 
+        if not phone.isdigit():
+            return "Phone number must contain only digits", 400
+        
+        birth_date = datetime.strptime(birth_date, '%Y-%m-%d').date() if birth_date else None # 將 birth_date 轉換為 datetime.date 類型
+        
         # 新增使用者
-        new_user = User(username=username, password=password)
+        new_user = User(
+            username=username,
+            password=password,
+            phone=phone,
+            gender=gender,
+            birth_date=birth_date,
+            init_weight=float(init_weight) if init_weight else None,
+            height=float(height) if height else None
+        )
         db.session.add(new_user)
         db.session.commit()
         return redirect(url_for('home'))  # 註冊成功後回到登入頁面
