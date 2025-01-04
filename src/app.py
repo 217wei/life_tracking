@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
+
+
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
 
@@ -66,7 +68,15 @@ class SleepData(db.Model):
     sleep_hours = db.Column(db.Float)
     sleep_quality = db.Column(db.String(20))  # 好/中/差
 
-### 待完成...... 
+
+
+class ExerciseData(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    exercise_type = db.Column(db.String(50), nullable=False)  # e.g., Running, Swimming
+    duration = db.Column(db.Float, nullable=False)  # Duration in minutes
+    calories_burned = db.Column(db.Float, nullable=True)
+    date = db.Column(db.DateTime, default=db.func.now())
 
 
 #建立資料表結構
@@ -375,11 +385,105 @@ def delete_medical_history(history_id):
     return redirect(url_for('view_medical_history', user_id=user_id))
 
 #########################################################
-### 待完成...... 
+# 查看運動資料
+@app.route('/view_exercise/<int:user_id>')
+def view_exercise(user_id):
+    exercises = ExerciseData.query.filter_by(user_id=user_id).all()
+    print(f"Fetched Exercises for User {user_id}: {exercises}")  # Debugging statement
+    return render_template('view_exercise.html', exercise_data=exercises, user_id=user_id)
+
+# 新增運動資料
+@app.route('/add_exercise/<int:user_id>', methods=['GET', 'POST'])
+def add_exercise(user_id):
+    try:
+        if request.method == 'POST':
+            # Log form data
+            print(f"Received Form Data: {request.form}")
+
+            # Process the form data
+            exercise_type = request.form['exercise_type']
+            duration = float(request.form['duration'])
+            calories_burned = request.form.get('calories_burned', None)
+            date_str = request.form.get('date', None)
+
+            # Convert date string to datetime.date object
+            if date_str:
+                date = datetime.strptime(date_str, '%Y-%m-%d').date()
+            else:
+                date = datetime.today().date()
+
+            # Log parsed values
+            print(f"Parsed Data - Type: {exercise_type}, Duration: {duration}, Calories: {calories_burned}, Date: {date}")
+
+            # Create a new exercise record
+            new_exercise = ExerciseData(
+                user_id=user_id,
+                exercise_type=exercise_type,
+                duration=duration,
+                calories_burned=float(calories_burned) if calories_burned else None,
+                date=date
+            )
+            db.session.add(new_exercise)
+            db.session.commit()
+
+            # Verify the data was added
+            print("New exercise data successfully added to the database.")
+            flash('Exercise data added successfully!', 'success')
+
+            # Redirect to dashboard
+            return redirect(url_for('dashboard', user_id=user_id))
+    except Exception as e:
+        # Log the error
+        print(f"Error occurred in add_exercise: {e}")
+        flash(f'Error: {e}', 'danger')
+        return redirect(url_for('dashboard', user_id=user_id))
+
+    # If GET request, render the form
+    return render_template('add_exercise.html', user_id=user_id)
 
 
+@app.route('/edit_exercise/<int:exercise_id>', methods=['GET', 'POST'])
+def edit_exercise(exercise_id):
+    exercise = ExerciseData.query.get_or_404(exercise_id)
 
+    if request.method == 'POST':
+        try:
+            # Update the exercise data from the form
+            exercise.exercise_type = request.form['exercise_type']
+            exercise.duration = float(request.form['duration'])
+            exercise.calories_burned = float(request.form['calories_burned'])
+            exercise.date = datetime.strptime(request.form['date'], '%Y-%m-%d').date()
+
+            # Commit changes to the database
+            db.session.commit()
+            flash('Exercise data updated successfully!', 'success')
+            return redirect(url_for('view_exercise', user_id=exercise.user_id))
+        except Exception as e:
+            flash(f'Error: {e}', 'danger')
+            return redirect(url_for('edit_exercise', exercise_id=exercise_id))
+
+    return render_template('edit_exercise.html', exercise=exercise)
+
+@app.route('/delete_exercise/<int:exercise_id>', methods=['POST'])
+def delete_exercise(exercise_id):
+    try:
+        # Find the exercise record by ID
+        exercise = ExerciseData.query.get_or_404(exercise_id)
+        user_id = exercise.user_id  # Save user ID before deleting
+
+        # Delete the record
+        db.session.delete(exercise)
+        db.session.commit()
+
+        # Provide feedback and redirect to the exercise list
+        flash('Exercise record deleted successfully!', 'success')
+        return redirect(url_for('view_exercise', user_id=user_id))
+    except Exception as e:
+        flash(f'Error deleting exercise record: {e}', 'danger')
+        return redirect(url_for('view_exercise', user_id=exercise.user_id))
 
 #########################################################
+
+
 if __name__ == '__main__':
     app.run(debug=True)

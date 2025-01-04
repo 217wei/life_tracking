@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Exercise Data</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #fdfbfb, #ebedee);
+            color: #333;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+        input, select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px 20px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background: linear-gradient(135deg, #45a049, #3e8e41);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .note {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Edit Exercise Data</h1>
+        <form method="POST">
+            <!-- Exercise Type -->
+            <label for="exercise_type">Exercise Type:</label>
+            <input type="text" name="exercise_type" id="exercise_type" value="{{ exercise.exercise_type }}" required>
+
+            <!-- Duration -->
+            <label for="duration">Duration (minutes):</label>
+            <input type="number" name="duration" id="duration" value="{{ exercise.duration }}" required>
+
+            <!-- Calories Burned -->
+            <label for="calories_burned">Calories Burned:</label>
+            <input type="number" name="calories_burned" id="calories_burned" value="{{ exercise.calories_burned }}" required>
+
+            <!-- Date -->
+            <label for="date">Date:</label>
+            <input type="date" name="date" id="date" value="{{ exercise.date }}" required>
+
+            <button type="submit">Save Changes</button>
+        </form>
+        <div class="note">Ensure all fields are correct before saving changes.</div>
+    </div>
+</body>
+</html>
