@@ -1,58 +1,123 @@
-<!-- Register -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Life Tracking - Register</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e3f2fd, #f1f8e9);
+            color: #333;
+        }
+        .overlay {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            margin: 50px auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 10px;
+        }
+        .icon-container {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .icon {
+            font-size: 50px;
+            color: #4CAF50;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+            font-weight: bold;
+            text-align: left;
+        }
+        input, select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        button {
+            width: 100%;
+            padding: 10px 20px;
+            margin-top: 15px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s ease-in-out;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+        .login-link {
+            margin-top: 15px;
+            text-align: center;
+        }
+        .login-link a {
+            color: #4CAF50;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .login-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
-    <h1>Register</h1>
-    <form method="POST" action="/register">
-        <!-- Username -->
-        <label for="username">Username:</label>
-        <input type="text" name="username" id="username" required>
-        <br><br>
+    <div class="overlay">
+        <h1>Register</h1>
+        <div class="icon-container">
+            <div class="icon">👤</div>
+        </div>
+        <form method="POST" action="/register">
+            <label for="username">Username:</label>
+            <input type="text" name="username" id="username" placeholder="Enter your username" required>
 
-        <!-- Password -->
-        <label for="password">Password:</label>
-        <input type="password" name="password" id="password" required>
-        <br><br>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password" placeholder="Enter your password" required>
 
-        <!-- Phone -->
-        <label for="phone">Phone:</label>
-        <input type="tel" name="phone" id="phone" required pattern="[0-9]+" title="Phone number must contain only digits">
-        <br><br>
+            <label for="phone">Phone:</label>
+            <input type="tel" name="phone" id="phone" placeholder="Enter your phone number" required pattern="[0-9]+" title="Phone number must contain only digits">
 
-        <!-- Gender -->
-        <label for="gender">Gender:</label>
-        <select name="gender" id="gender" required>
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-            <option value="Other">Other</option>
-        </select>
-        <br><br>
+            <label for="gender">Gender:</label>
+            <select name="gender" id="gender" required>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+                <option value="Other">Other</option>
+            </select>
 
-        <!-- Birth Date -->
-        <label for="birth_date">Birth Date:</label>
-        <input type="date" name="birth_date" id="birth_date">
-        <br><br>
+            <label for="birth_date">Birth Date:</label>
+            <input type="date" name="birth_date" id="birth_date">
 
-        <!-- Initial Weight -->
-        <label for="init_weight">Initial Weight (kg):</label>
-        <input type="number" name="init_weight" id="init_weight" step="0.1">
-        <br><br>
+            <label for="init_weight">Initial Weight (kg):</label>
+            <input type="number" name="init_weight" id="init_weight" step="0.1" placeholder="Enter your weight">
 
-        <!-- Height -->
-        <label for="height">Height (cm):</label>
-        <input type="number" name="height" id="height" step="0.1">
-        <br><br>
+            <label for="height">Height (cm):</label>
+            <input type="number" name="height" id="height" step="0.1" placeholder="Enter your height">
 
-        <!-- Submit Button -->
-        <button type="submit">Register</button>
-    </form>
-    
-    <!-- Link to Login -->
-    <p>Already have an account? <a href="/">Login here</a>.</p>
+            <button type="submit">Register</button>
+        </form>
+        <div class="login-link">
+            <p>Already have an account? <a href="/">Login here</a>.</p>
+        </div>
+    </div>
 </body>
 </html>
