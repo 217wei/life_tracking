@@ -287,18 +287,18 @@ def delete_diet(diet_id):
 
 
 #########################################################
-# 新增睡眠資料(gpt產生的範例)
-@app.route('/add_sleep/<int:user_id>', methods=['GET', 'POST'])
-def add_sleep(user_id):
-    if request.method == 'POST':
-        sleep_hours = request.form['sleep_hours']
-        sleep_quality = request.form['sleep_quality']
+# # 新增睡眠資料(gpt產生的範例)
+# @app.route('/add_sleep/<int:user_id>', methods=['GET', 'POST'])
+# def add_sleep(user_id):
+#     if request.method == 'POST':
+#         sleep_hours = request.form['sleep_hours']
+#         sleep_quality = request.form['sleep_quality']
 
-        new_sleep = SleepData(user_id=user_id, sleep_hours=sleep_hours, sleep_quality=sleep_quality)
-        db.session.add(new_sleep)
-        db.session.commit()
-        return redirect(url_for('dashboard', user_id=user_id))
-    return render_template('add_sleep.html')
+#         new_sleep = SleepData(user_id=user_id, sleep_hours=sleep_hours, sleep_quality=sleep_quality)
+#         db.session.add(new_sleep)
+#         db.session.commit()
+#         return redirect(url_for('dashboard', user_id=user_id))
+#     return render_template('add_sleep.html')
 
 #########################################################
 # 新增醫療歷史記錄
