@@ -78,6 +78,13 @@ class ExerciseData(db.Model):
     calories_burned = db.Column(db.Float, nullable=True)
     date = db.Column(db.DateTime, default=db.func.now())
 
+class GoalData(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    goal_type = db.Column(db.String(50), nullable=False)  # e.g., Weight Loss, Cardio Improvement
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
+
 
 #建立資料表結構
 with app.app_context():
@@ -483,7 +490,73 @@ def delete_exercise(exercise_id):
         return redirect(url_for('view_exercise', user_id=exercise.user_id))
 
 #########################################################
+# Route to view goals
+@app.route('/view_goals/<int:user_id>')
+def view_goals(user_id):
+    goals = GoalData.query.filter_by(user_id=user_id).all()
+    return render_template('view_goals.html', goal_data=goals, user_id=user_id)
 
+# Route to add a new goal
+@app.route('/add_goal/<int:user_id>', methods=['GET', 'POST'])
+def add_goal(user_id):
+    try:
+        if request.method == 'POST':
+            goal_type = request.form['goal_type']
+            start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d').date()
+            end_date = datetime.strptime(request.form['end_date'], '%Y-%m-%d').date()
+
+            new_goal = GoalData(
+                user_id=user_id,
+                goal_type=goal_type,
+                start_date=start_date,
+                end_date=end_date
+            )
+            db.session.add(new_goal)
+            db.session.commit()
+
+            flash('Goal added successfully!', 'success')
+            return redirect(url_for('view_goals', user_id=user_id))
+    except Exception as e:
+        flash(f'Error adding goal: {e}', 'danger')
+        return redirect(url_for('view_goals', user_id=user_id))
+
+    return render_template('add_goal.html', user_id=user_id)
+
+# Route to edit a goal
+@app.route('/edit_goal/<int:goal_id>', methods=['GET', 'POST'])
+def edit_goal(goal_id):
+    goal = GoalData.query.get_or_404(goal_id)
+
+    if request.method == 'POST':
+        try:
+            goal.goal_type = request.form['goal_type']
+            goal.start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d').date()
+            goal.end_date = datetime.strptime(request.form['end_date'], '%Y-%m-%d').date()
+
+            db.session.commit()
+            flash('Goal updated successfully!', 'success')
+            return redirect(url_for('view_goals', user_id=goal.user_id))
+        except Exception as e:
+            flash(f'Error updating goal: {e}', 'danger')
+            return redirect(url_for('edit_goal', goal_id=goal_id))
+
+    return render_template('edit_goal.html', goal=goal)
+
+# Route to delete a goal
+@app.route('/delete_goal/<int:goal_id>', methods=['POST'])
+def delete_goal(goal_id):
+    try:
+        goal = GoalData.query.get_or_404(goal_id)
+        user_id = goal.user_id
+
+        db.session.delete(goal)
+        db.session.commit()
+
+        flash('Goal deleted successfully!', 'success')
+        return redirect(url_for('view_goals', user_id=user_id))
+    except Exception as e:
+        flash(f'Error deleting goal: {e}', 'danger')
+        return redirect(url_for('view_goals', user_id=goal.user_id))
 
 if __name__ == '__main__':
     app.run(debug=True)
