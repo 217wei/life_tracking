@@ -1,6 +1,18 @@
-# life_tracking
+# Life_tracking
 
-Life_tracking
+This is the final project for Database Systems course in NCCU 2025 fall. The project aims to design a database for tracking health information. 
+
+## Table of Contents
+- [Project Overview](#project-overview)ER-model 
+- [Requirements Analysis](# Requirements Analysis)
+- [團隊名稱]生命追蹤
+    林青欣  教碩二
+    李冠蓁  資訊三
+    李采萱  資訊三
+    林子葳  資訊三
+    宋庭萱  統計四
+    呂承恩  應數碩一
+
 
 
 # Requirements Analysis
