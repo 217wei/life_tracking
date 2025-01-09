@@ -63,12 +63,18 @@
             margin-top: 10px;
             text-align: center;
         }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Edit Goal</h1>
-        <form method="POST">
+        <form id="edit-goal-form" method="POST">
             <!-- Goal Type -->
             <label for="goal_type">Goal Type:</label>
             <input type="text" name="goal_type" id="goal_type" value="{{ goal.goal_type }}" required>
@@ -81,9 +87,27 @@
             <label for="end_date">End Date:</label>
             <input type="date" name="end_date" id="end_date" value="{{ goal.end_date }}" required>
 
+            <div class="error" id="date-error">Start date cannot be later than end date!</div>
+
             <button type="submit">Save Changes</button>
         </form>
         <div class="note">Ensure all fields are correct before saving changes.</div>
     </div>
+
+    <!-- JavaScript for Date Validation -->
+    <script>
+        document.getElementById('edit-goal-form').addEventListener('submit', function(event) {
+            const startDate = new Date(document.getElementById('start_date').value);
+            const endDate = new Date(document.getElementById('end_date').value);
+            const errorDiv = document.getElementById('date-error');
+
+            if (startDate > endDate) {
+                errorDiv.style.display = 'block'; // Show error message
+                event.preventDefault(); // Prevent form submission
+            } else {
+                errorDiv.style.display = 'none'; // Hide error message
+            }
+        });
+    </script>
 </body>
 </html>
