@@ -3,19 +3,21 @@
 This is the final project for Database Systems course in NCCU 2025 fall. The project aims to design a database for tracking health information. 
 
 ## Table of Contents
-- [Project Overview](#project-overview)ER-model 
-- [Requirements Analysis](# Requirements Analysis)
+- [Project Overview](#project-overview)
+- [Requirements Analysis](#requirements-analysis)
 - [團隊名稱]生命追蹤
-    林青欣  教碩二
-    李冠蓁  資訊三
-    李采萱  資訊三
-    林子葳  資訊三
-    宋庭萱  統計四
-    呂承恩  應數碩一
+
+## 團隊名稱: 生命追蹤
+- 林青欣  教碩二  
+- 李冠蓁  資訊三  
+- 李采萱  資訊三  
+- 林子葳  資訊三  
+- 宋庭萱  統計四  
+- 呂承恩  應數碩一
 
 
 
-# Requirements Analysis
+## Requirements Analysis
 - 使用者可以從首頁登入註冊帳號，輸入基本資料（身高、體重、出生日期、電話、姓名、性別）。
 - 登入之後，會有自己的使用者ID。
 - 使用者可以每天記錄自己健康狀況（體重、睡眠…）。
