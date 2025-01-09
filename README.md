@@ -4,8 +4,9 @@ This is the final project for Database Systems course in NCCU 2025 fall. The pro
 
 ## Table of Contents
 - [Project Overview](#project-overview)
-- [Requirements Analysis](#requirements-analysis)
 - [Team](#Team)
+- [Requirements Analysis](#requirements-analysis)
+- [System Function](#system-function)
 
 ## Team
 - 林青欣  教碩二  
@@ -28,7 +29,7 @@ This is the final project for Database Systems course in NCCU 2025 fall. The pro
 - 系統提供運動選項讓使用者選擇當天記錄。
 - 運動分成有氧及無氧。
 
-## 系統功能
+## System Function
 使用者可以註冊自己的帳號，並輸入的健康資料，每日可以更新當天健康記錄，寫入自己攝入的營養份數和運動。使用者也可以設定目標，作爲執行時間參考。每日記錄及目標都可以被更新或是刪除。
 - 資料庫模組：使用者資料、醫療病史、目標記錄、每日健康記錄、睡眠記錄、飲食記錄
 - 資料庫新增、查詢修改刪除：將目標加入或移除目標記錄、健康記錄
