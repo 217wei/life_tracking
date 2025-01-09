@@ -5,9 +5,9 @@ This is the final project for Database Systems course in NCCU 2025 fall. The pro
 ## Table of Contents
 - [Project Overview](#project-overview)
 - [Requirements Analysis](#requirements-analysis)
-- [團隊名稱]生命追蹤
+- [Team](#Team)
 
-## 團隊名稱: 生命追蹤
+## Team
 - 林青欣  教碩二  
 - 李冠蓁  資訊三  
 - 李采萱  資訊三  
