@@ -24,7 +24,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)  # 用戶名，必填且唯一
     password = db.Column(db.String(50), nullable=False)               # 密碼，必填
-    phone = db.Column(db.String(15), unique=True, nullable=False)     # 電話號碼，必填且唯一
+    phone = db.Column(db.String(15), nullable=False)                  # 電話號碼，必填
     gender = db.Column(db.String(10), nullable=True)                  # 性別，可選
     birth_date = db.Column(db.Date, nullable=True)                    # 出生日期，可選
     init_weight = db.Column(db.Float, nullable=True)                  # 初始體重，可選，浮點型
