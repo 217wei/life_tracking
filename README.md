@@ -1,6 +1,7 @@
 # Life_tracking
 
 This is the final project for Database Systems course in NCCU 2025 fall. The project aims to design a database for tracking health information. 
+[Project Document](https://docs.google.com/document/d/15wvpHg4tZww_bhoxCcS0eIUR3v3F7heNENXpamSGZAI/edit?tab=t.0#heading=h.9i92t9ddoci)
 
 ## Table of Contents
 - [Project Overview](#project-overview)
