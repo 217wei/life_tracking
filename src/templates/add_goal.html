@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Goal Management</title>
+    <title>Add Goal</title>
     <style>
         body {
             font-family: 'Arial', sans-serif;
-            line-height: 1.6;
+            background: linear-gradient(135deg, #e3f2fd, #f1f8e9);
             margin: 0;
             padding: 0;
-            background: linear-gradient(135deg, #e3f2fd, #f1f8e9);
             color: #333;
         }
         .overlay {
@@ -21,29 +20,17 @@
             margin: 50px auto;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         }
-        h1 {
+        h1, h2 {
             text-align: center;
             color: #4CAF50;
             margin-bottom: 20px;
-        }
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .icon-container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .icon {
-            font-size: 60px;
-            color: #4CAF50;
         }
         label {
             display: block;
             margin-top: 10px;
             font-weight: bold;
         }
-        input, select {
+        input {
             width: calc(100% - 20px);
             padding: 10px;
             margin-top: 5px;
@@ -69,16 +56,19 @@
             transform: translateY(-2px);
             box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
         }
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <div class="overlay">
         <h1>Goal Management</h1>
-        <div class="icon-container">
-            <div class="icon">🎯</div>
-        </div>
         <h2>Add Your Goal</h2>
-        <form method="POST" action="/add_goal/{{ user_id }}">
+
+        <form id="goal-form" method="POST" action="/add_goal/{{ user_id }}">
             <!-- Goal Type -->
             <label for="goal_type">Goal Type:</label>
             <input type="text" id="goal_type" name="goal_type" placeholder="e.g., Weight Loss, Cardio Improvement" required>
@@ -91,8 +81,26 @@
             <label for="end_date">End Date:</label>
             <input type="date" id="end_date" name="end_date" required>
 
+            <div class="error" id="date-error" style="display: none;">Start date cannot be later than end date!</div>
+
             <button type="submit">Submit</button>
         </form>
     </div>
+
+    <!-- JavaScript for Date Validation -->
+    <script>
+        document.getElementById('goal-form').addEventListener('submit', function(event) {
+            const startDate = new Date(document.getElementById('start_date').value);
+            const endDate = new Date(document.getElementById('end_date').value);
+            const errorDiv = document.getElementById('date-error');
+
+            if (startDate > endDate) {
+                errorDiv.style.display = 'block'; // Show error message
+                event.preventDefault(); // Prevent form submission
+            } else {
+                errorDiv.style.display = 'none'; // Hide error message
+            }
+        });
+    </script>
 </body>
 </html>

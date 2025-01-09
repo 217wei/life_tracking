@@ -505,6 +505,10 @@ def add_goal(user_id):
             start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d').date()
             end_date = datetime.strptime(request.form['end_date'], '%Y-%m-%d').date()
 
+            if start_date > end_date:
+                flash('Start date cannot be later than end date!', 'danger')
+                return redirect(url_for('add_goal', user_id=user_id))
+        
             new_goal = GoalData(
                 user_id=user_id,
                 goal_type=goal_type,
@@ -533,6 +537,11 @@ def edit_goal(goal_id):
             goal.start_date = datetime.strptime(request.form['start_date'], '%Y-%m-%d').date()
             goal.end_date = datetime.strptime(request.form['end_date'], '%Y-%m-%d').date()
 
+            if goal.start_date > goal.end_date:
+                flash('Start date cannot be later than end date!', 'danger')
+                return redirect(url_for('edit_goal', goal_id=goal_id))
+
+        
             db.session.commit()
             flash('Goal updated successfully!', 'success')
             return redirect(url_for('view_goals', user_id=goal.user_id))
