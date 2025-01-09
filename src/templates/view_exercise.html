@@ -80,7 +80,6 @@
                     <th>ID</th>
                     <th>Type</th>
                     <th>Duration (minutes)</th>
-                    <th>Calories Burned</th>
                     <th>Date</th>
                     <th>Actions</th>
                 </tr>
@@ -90,9 +89,8 @@
                 <tr>
                     <td>{{ exercise.id }}</td>
                     <td>{{ exercise.exercise_type }}</td>
-                    <td>{{ exercise.duration }}</td>
-                    <td>{{ exercise.calories_burned or 'N/A' }}</td>
-                    <td>{{ exercise.date }}</td>
+                    <td>{{ exercise.duration|int }}</td>
+                    <td>{{ exercise.date.strftime('%Y-%m-%d') }}</td>
                     <td>
                         <a href="/edit_exercise/{{ exercise.id }}" class="btn">Edit</a>
                         <form action="/delete_exercise/{{ exercise.id }}" method="POST" style="display: inline-block;">

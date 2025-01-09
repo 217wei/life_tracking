@@ -73,9 +73,8 @@ class SleepData(db.Model):
 class ExerciseData(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    exercise_type = db.Column(db.String(50), nullable=False)  # e.g., Running, Swimming
+    exercise_type = db.Column(db.String(50), nullable=False)  #有氧、無氧
     duration = db.Column(db.Float, nullable=False)  # Duration in minutes
-    calories_burned = db.Column(db.Float, nullable=True)
     date = db.Column(db.DateTime, default=db.func.now())
 
 class GoalData(db.Model):
@@ -392,14 +391,14 @@ def delete_medical_history(history_id):
     return redirect(url_for('view_medical_history', user_id=user_id))
 
 #########################################################
-# 查看運動資料
+# Check exercise data
 @app.route('/view_exercise/<int:user_id>')
 def view_exercise(user_id):
     exercises = ExerciseData.query.filter_by(user_id=user_id).all()
-    print(f"Fetched Exercises for User {user_id}: {exercises}")  # Debugging statement
+#    print(f"Fetched Exercises for User {user_id}: {exercises}")  # Debugging statement
     return render_template('view_exercise.html', exercise_data=exercises, user_id=user_id)
 
-# 新增運動資料
+# Add exercise data
 @app.route('/add_exercise/<int:user_id>', methods=['GET', 'POST'])
 def add_exercise(user_id):
     try:
@@ -410,7 +409,7 @@ def add_exercise(user_id):
             # Process the form data
             exercise_type = request.form['exercise_type']
             duration = float(request.form['duration'])
-            calories_burned = request.form.get('calories_burned', None)
+         
             date_str = request.form.get('date', None)
 
             # Convert date string to datetime.date object
@@ -420,14 +419,14 @@ def add_exercise(user_id):
                 date = datetime.today().date()
 
             # Log parsed values
-            print(f"Parsed Data - Type: {exercise_type}, Duration: {duration}, Calories: {calories_burned}, Date: {date}")
+            print(f"Parsed Data - Type: {exercise_type}, Duration: {duration}, Date: {date}")
 
             # Create a new exercise record
             new_exercise = ExerciseData(
                 user_id=user_id,
                 exercise_type=exercise_type,
                 duration=duration,
-                calories_burned=float(calories_burned) if calories_burned else None,
+              
                 date=date
             )
             db.session.add(new_exercise)
@@ -458,7 +457,6 @@ def edit_exercise(exercise_id):
             # Update the exercise data from the form
             exercise.exercise_type = request.form['exercise_type']
             exercise.duration = float(request.form['duration'])
-            exercise.calories_burned = float(request.form['calories_burned'])
             exercise.date = datetime.strptime(request.form['date'], '%Y-%m-%d').date()
 
             # Commit changes to the database
